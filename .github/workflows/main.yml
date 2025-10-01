@@ -33,4 +33,4 @@ jobs:
           MAIL_DESTINO: ${{ secrets.MAIL_DESTINO }}
           MAIL_DESTINATARIOS: ${{ secrets.MAIL_DESTINATARIOS }}
         run: |
-          python fact.py
+          python main.py
