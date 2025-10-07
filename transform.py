@@ -9,7 +9,6 @@ load_dotenv()
 
 MAIL_AUTOR = os.getenv("MAIL_AUTOR")
 APP_GMAIL_PASS = os.getenv("APP_GMAIL_PASS")
-MAIL_DESTINO = os.getenv("MAIL_DESTINO")
 MAIL_DESTINATARIOS = os.getenv("MAIL_DESTINATARIOS").split(",")
 
 today = datetime.now()
@@ -20,7 +19,7 @@ def export_excel(data_docs):
 
   wb = Workbook()
   ws = wb.active
-  ws.title = "Docs e infs. ult. semana"
+  ws.title = "Docs./infs. ult. semana"
 
   headers = [ "ALUMNO ID", "NOMBRE", "OS", "NOMBRE DOC/INF", "FEC CARGA", "TIPO", 
                       "UBIC. CAT.", "UBIC. AÑO", "USUARIO DE CARGA" ]
@@ -54,7 +53,8 @@ def enviar_correo(nombre_archivo):
     yag.send(
       to=MAIL_DESTINATARIOS,
       subject="Reporte general de Documentacion",
-      contents="Buenos días, se adjunta el reporte del área de Documentación. ¡Saludos!",
+      contents= """Buenos días, se adjunta el reporte semanal del área de Documentación.
+              \nSaludos,\nMariano López - Ailes Inclusión.""",
       attachments=nombre_archivo
     )
     print("Correo enviado correctamente.")
