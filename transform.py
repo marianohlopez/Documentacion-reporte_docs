@@ -19,7 +19,7 @@ def export_excel(data_docs):
 
   wb = Workbook()
   ws = wb.active
-  ws.title = "Docs./infs. ult. semana"
+  ws.title = "Docs. - infs. ult. semana"
 
   headers = [ "ALUMNO ID", "NOMBRE", "OS", "NOMBRE DOC/INF", "FEC CARGA", "TIPO", 
                       "UBIC. CAT.", "UBIC. AÑO", "USUARIO DE CARGA" ]
