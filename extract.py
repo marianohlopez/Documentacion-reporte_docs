@@ -1,6 +1,6 @@
 def extract_newdocs(cursor):
   query = """ 
-    -- Documentos cargados por coordinación
+    -- Documentos
     SELECT DISTINCT d.docalumno_id AS id_doc, d.docalumno_alumno AS alumno_id, 
       CONCAT(p.alumno_apellido, ", ", p.alumno_nombre) AS alumno,
         o.os_nombre,
@@ -22,12 +22,12 @@ def extract_newdocs(cursor):
         AND p.prestipo_nombre_corto != "TERAPIAS"
         AND d.docalumnoseccion_nombre IN ('GENERAL', 'SAIE')
         AND d.docalumno_anio IN ('GENERAL', '2025')
-        AND r_doc.`role` IN ("COORDI", "COORDINACION_GENERAL", "RESP_INCLUSION")
+        AND r_doc.`role` IN ("COORDI", "COORDINACION_GENERAL", "RESP_INCLUSION", "ADMISIONES")
         AND d.docalumno_fec_carga >= CURDATE() - INTERVAL 7 DAY
 
     UNION ALL
 
-    -- Informes cargados por coordinación
+    -- Informes
     SELECT DISTINCT i.alumnoinforme_id AS id_doc, i.alumno_id AS alumno_id, 
       CONCAT(p.alumno_apellido, ", ", p.alumno_nombre) AS alumno, 
         o.os_nombre,
@@ -47,9 +47,31 @@ def extract_newdocs(cursor):
     WHERE 
       p.prestacion_estado = 1
         AND p.prestipo_nombre_corto != "TERAPIAS"
-        AND r_inf.`role` IN ("COORDI", "COORDINACION_GENERAL", "RESP_INCLUSION")
+        AND r_inf.`role` IN ("COORDI", "COORDINACION_GENERAL", "RESP_INCLUSION", "ADMISIONES")
         AND i.fec_carga >= CURDATE() - INTERVAL 7 DAY
-      ORDER BY alumno;
+	
+    UNION ALL
+    
+    -- seguimientos 
+    SELECT DISTINCT s.segalum_id AS id_doc, s.segalum_alumno AS alumno_id, 
+      CONCAT(p.alumno_apellido, ", ", p.alumno_nombre) AS alumno, 
+        o.os_nombre,
+        s.segcat_nombre AS nombre_doc,
+        DATE_FORMAT(s.segalum_fec_carga, '%d-%m-%Y') as fec_carga,
+		"SEGUIMIENTOS" AS docalumnoseccion_nombre, YEAR(STR_TO_DATE(s.segalum_mesanio, '%m/%Y')) AS anio, 
+		s.usuario_carga_nombre AS usuario, 
+        s.segalum_rol_carga AS rol, 'SEG' AS tipo
+    FROM v_seguimientos s 
+    LEFT JOIN v_prestaciones p
+      ON s.segalum_alumno = p.prestacion_alumno
+    LEFT JOIN v_os o
+      ON p.prestacion_os = o.os_id
+      WHERE 
+        p.prestacion_estado = 1
+          AND p.prestipo_nombre_corto != "TERAPIAS"
+          AND s.segalum_rol_carga IN ("COORDI", "COORDINACION_GENERAL", "RESP_INCLUSION", "ADMISIONES")
+          AND s.segalum_fec_carga >= CURDATE() - INTERVAL 7 DAY
+	  ORDER BY alumno
  """
   cursor.execute(query)
   return cursor.fetchall()
