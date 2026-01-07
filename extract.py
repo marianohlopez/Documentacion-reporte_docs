@@ -19,11 +19,11 @@ def extract_newdocs(cursor):
         ON u_doc.user_id = r_doc.user_id
     WHERE 
       p.prestacion_estado = 1
-        AND p.prestipo_nombre_corto != "TERAPIAS"
-        AND d.docalumnoseccion_nombre IN ('GENERAL', 'SAIE')
-        AND d.docalumno_anio IN ('GENERAL', '2025')
-        AND r_doc.`role` IN ("COORDI", "COORDINACION_GENERAL", "RESP_INCLUSION", "ADMISIONES")
-        AND d.docalumno_fec_carga >= CURDATE() - INTERVAL 7 DAY
+      AND p.prestipo_nombre_corto != "TERAPIAS"
+      AND d.docalumnoseccion_nombre IN ('GENERAL', 'SAIE')
+      AND d.docalumno_anio IN ('GENERAL', '2026')
+      AND r_doc.`role` IN ("COORDI", "COORDINACION_GENERAL", "RESP_INCLUSION", "ADMISIONES", "EQUIPO_TECNICO")
+      AND d.docalumno_fec_carga >= CURDATE() - INTERVAL 7 DAY
 
     UNION ALL
 
@@ -46,9 +46,9 @@ def extract_newdocs(cursor):
         ON u_inf.user_id = r_inf.user_id
     WHERE 
       p.prestacion_estado = 1
-        AND p.prestipo_nombre_corto != "TERAPIAS"
-        AND r_inf.`role` IN ("COORDI", "COORDINACION_GENERAL", "RESP_INCLUSION", "ADMISIONES")
-        AND i.fec_carga >= CURDATE() - INTERVAL 7 DAY
+      AND p.prestipo_nombre_corto != "TERAPIAS"
+      AND r_inf.`role` IN ("COORDI", "COORDINACION_GENERAL", "RESP_INCLUSION", "ADMISIONES", "EQUIPO_TECNICO")
+      AND i.fec_carga >= CURDATE() - INTERVAL 7 DAY
 	
     UNION ALL
     
@@ -68,9 +68,9 @@ def extract_newdocs(cursor):
       ON p.prestacion_os = o.os_id
       WHERE 
         p.prestacion_estado = 1
-          AND p.prestipo_nombre_corto != "TERAPIAS"
-          AND s.segalum_rol_carga IN ("COORDI", "COORDINACION_GENERAL", "RESP_INCLUSION", "ADMISIONES")
-          AND s.segalum_fec_carga >= CURDATE() - INTERVAL 7 DAY
+        AND p.prestipo_nombre_corto != "TERAPIAS"
+        AND s.segalum_rol_carga IN ("COORDI", "COORDINACION_GENERAL", "RESP_INCLUSION", "ADMISIONES", "EQUIPO_TECNICO")
+        AND s.segalum_fec_carga >= CURDATE() - INTERVAL 7 DAY
 	  ORDER BY alumno
  """
   cursor.execute(query)
